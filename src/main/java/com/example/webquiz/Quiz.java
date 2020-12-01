@@ -2,13 +2,19 @@ package com.example.webquiz;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Quiz {
 
     private int id;
+    @NotBlank
     private String title;
+    @NotBlank
     private String text;
+    @NotNull
     private List<String> options;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<Integer> answer;
@@ -18,7 +24,10 @@ public class Quiz {
         this.title = title;
         this.text = text;
         this.options = options;
-        this.answer = answer;
+        if (answer == null)
+            this.answer = new ArrayList<>();
+        else
+            this.answer = answer;
     }
 
     public void setId(int id) {
