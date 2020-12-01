@@ -11,18 +11,24 @@ import java.util.List;
 public class QuizController {
 
     private List<Quiz> quizzes = new ArrayList<>();
-    private List<String> options = new ArrayList<>();
 
     public QuizController() {
     }
 
+    private boolean checkAnswer(int i, Answer answer) {
+        List<Integer> serverAnswers = quizzes.get(i).getAnswer();
+        System.out.println(serverAnswers);
+        System.out.println(answer.getAnswer());
+        return serverAnswers.equals(answer.getAnswer());
+    }
     @RequestMapping(value = "/api/quizzes/{id}/solve", method = RequestMethod.POST)
-    public Answer getAnswer(@PathVariable int id, @RequestParam("answer") int answer) {
+    public ServerAnswer getAnswer(@PathVariable int id, @RequestBody Answer answer) {
         for (int i = 0; i < quizzes.size(); i++) {
-            if (quizzes.get(i).getId() == id && quizzes.get(i).getAnswer() == answer)
-                return new Answer(true);
+            if (quizzes.get(i).getId() == id && checkAnswer(i, answer)) {
+                return new ServerAnswer(true);
+            }
         }
-        return new Answer(false);
+        return new ServerAnswer(false);
     }
 
     @GetMapping(path = "/api/quizzes/{id}")
@@ -44,11 +50,6 @@ public class QuizController {
     @RequestMapping(value = "/api/quizzes", method = RequestMethod.GET)
     public @ResponseBody
     List<Quiz> getQuizzes() {
-       /* options = new ArrayList<>(List.of("Robot", "Tea leaf", "Cup of coffee", "Bug"));
-        quizzes.add(new Quiz(1, "The Java Logo", "What is depicted on the Java logo?", options, 2));
-        options = List.of("Everything goes right", "42", "2+2=4", "11011100");
-        quizzes.add(new Quiz((int) (Math.random() * 10), "The Ultimate Question",
-                "What is the answer to the Ultimate Question of Life, the Universe and Everything?", options, 1));*/
         if (quizzes.isEmpty())
             return new ArrayList<>();
         return quizzes;
