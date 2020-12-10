@@ -7,12 +7,14 @@ import com.example.webquiz.entity.ResponseQuiz;
 import com.example.webquiz.entity.Quiz;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/quizzes")
@@ -28,31 +30,45 @@ public class QuizController {
 
     @PostMapping(path = "/{id}/solve")
     public ResponseQuiz getAnswer(@PathVariable int id, @RequestBody Answer answer) {
-        for (var quiz : quizzes)
+        Quiz quiz = quizRepository.findById((long) id).get();
+        if (quiz.getAnswer().equals(answer.getAnswer()))
+            return new ResponseQuiz(true);
+        return new ResponseQuiz(false);
+       /* for (var quiz : quizzes)
             if (quiz.getId() == id && quiz.getAnswer().equals(answer.getAnswer()))
                 return new ResponseQuiz(true);
-        return new ResponseQuiz(false);
+        return new ResponseQuiz(false);*/
     }
 
     @GetMapping(path = "/{id}")
-    public Object getQuiz(@PathVariable int id) {
-        for (var quiz : quizzes)
+    public ResponseEntity<Quiz> getQuiz(@PathVariable int id) {
+        Quiz quiz = quizRepository.findById((long) id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Quiz not found for this id"));
+        return ResponseEntity.ok().body(quiz);
+        /*for (var quiz : quizzes)
             if (quiz.getId() == id)
-                return quiz;
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+                return quiz;*/
+        //throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Quiz not found for this id");
     }
 
     @PostMapping()
     public Object createQuiz(@Valid @RequestBody Quiz quiz) {
         quiz.setId(IDGeneration.generateID());
-        quizzes.add(quiz);
-        return quiz;
+        /*quizzes.add(quiz);
+        return quiz;*/
+        return quizRepository.save(quiz);
     }
 
     @GetMapping()
     public List<Quiz> getQuizzes() {
-        if (quizzes.isEmpty())
-            return new ArrayList<>();
-        else return quizzes;
+        /*if (quizzes.isEmpty())
+            return new ArrayList<>();*/
+        //return quizzes;
+        return quizRepository.findAll();
     }
+
+    /*@DeleteMapping("/{id}")
+    public Map<String, Boolean> deleteQuiz(@PathVariable int id) {
+
+    }*/
 }
