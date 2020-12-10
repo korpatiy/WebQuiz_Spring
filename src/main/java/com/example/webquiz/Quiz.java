@@ -2,19 +2,20 @@ package com.example.webquiz;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Quiz {
 
     private int id;
-    @NotBlank
+    @NotEmpty(message = "Title is required")
     private String title;
-    @NotBlank
+    @NotEmpty(message = "Text is required")
     private String text;
-    @NotNull
+    @NotEmpty(message = "Options are required")
+    @Size(min = 2, message = "Question must have at least two options")
     private List<String> options;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<Integer> answer;
@@ -24,10 +25,7 @@ public class Quiz {
         this.title = title;
         this.text = text;
         this.options = options;
-        if (answer == null)
-            this.answer = new ArrayList<>();
-        else
-            this.answer = answer;
+        this.answer = answer;
     }
 
     public void setId(int id) {
@@ -51,6 +49,6 @@ public class Quiz {
     }
 
     public List<Integer> getAnswer() {
-        return answer;
+        return answer == null ? new ArrayList<>() : answer;
     }
 }
