@@ -1,4 +1,4 @@
-package com.example.webquiz;
+package com.example.webquiz.entity;
 
 import java.util.List;
 

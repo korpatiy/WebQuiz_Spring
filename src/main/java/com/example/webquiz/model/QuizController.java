@@ -1,5 +1,11 @@
-package com.example.webquiz;
+package com.example.webquiz.model;
 
+import com.example.webquiz.api.QuizRepository;
+import com.example.webquiz.entity.Answer;
+import com.example.webquiz.IDGeneration;
+import com.example.webquiz.entity.ResponseQuiz;
+import com.example.webquiz.entity.Quiz;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -11,6 +17,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/quizzes")
 public class QuizController {
+
+    @Autowired
+    private QuizRepository quizRepository;
 
     private List<Quiz> quizzes = new ArrayList<>();
 
