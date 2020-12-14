@@ -5,6 +5,7 @@ import com.example.webquiz.entity.Answer;
 import com.example.webquiz.IDGeneration;
 import com.example.webquiz.entity.ResponseQuiz;
 import com.example.webquiz.entity.Quiz;
+import org.hibernate.collection.internal.PersistentBag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,9 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/quizzes")
@@ -28,21 +27,24 @@ public class QuizController {
     public QuizController() {
     }
 
+
+
     @PostMapping(path = "/{id}/solve")
-    public ResponseQuiz getAnswer(@PathVariable int id, @RequestBody Answer answer) {
-        Quiz quiz = quizRepository.findById((long) id).get();
-        if (quiz.getAnswer().equals(answer.getAnswer()))
+    public ResponseQuiz getAnswer(@PathVariable Long id, @RequestBody Answer answer) {
+        Quiz quiz = quizRepository.findById(id).get();
+        if (answer.getAnswer().equals(quiz.getAnswer()))
             return new ResponseQuiz(true);
         return new ResponseQuiz(false);
-       /* for (var quiz : quizzes)
+
+        /* for (var quiz : quizzes)
             if (quiz.getId() == id && quiz.getAnswer().equals(answer.getAnswer()))
                 return new ResponseQuiz(true);
         return new ResponseQuiz(false);*/
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<Quiz> getQuiz(@PathVariable int id) {
-        Quiz quiz = quizRepository.findById((long) id)
+    public ResponseEntity<Quiz> getQuiz(@PathVariable Long id) {
+        Quiz quiz = quizRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Quiz not found for this id"));
         return ResponseEntity.ok().body(quiz);
         /*for (var quiz : quizzes)

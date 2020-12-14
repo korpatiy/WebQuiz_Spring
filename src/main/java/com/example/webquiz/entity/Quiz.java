@@ -13,7 +13,7 @@ public class Quiz {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private long id;
     @Column(nullable = false)
     @NotEmpty(message = "Title is required")
     private String title;
@@ -31,7 +31,7 @@ public class Quiz {
     public Quiz() {
     }
 
-    public Quiz(int id, String title, String text, List<String> options, List<Integer> answer) {
+    public Quiz(long id, String title, String text, List<String> options, List<Integer> answer) {
         this.id = id;
         this.title = title;
         this.text = text;
@@ -39,7 +39,7 @@ public class Quiz {
         this.answer = answer;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -59,7 +59,7 @@ public class Quiz {
         return answer == null ? new ArrayList<>() : answer;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
