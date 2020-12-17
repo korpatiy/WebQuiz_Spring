@@ -1,6 +1,6 @@
-package com.example.webquiz.api;
+package com.example.webquiz.repositories;
 
-import com.example.webquiz.entity.Quiz;
+import com.example.webquiz.entities.Quiz;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface QuizRepository extends JpaRepository<Quiz, Long> {

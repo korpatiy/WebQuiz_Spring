@@ -1,6 +1,7 @@
-package com.example.webquiz.entity;
+package com.example.webquiz.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -14,10 +15,8 @@ public class Quiz {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-    @Column(nullable = false)
     @NotEmpty(message = "Title is required")
     private String title;
-    @Column(nullable = false)
     @NotEmpty(message = "Text is required")
     private String text;
     @ElementCollection
