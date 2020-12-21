@@ -2,7 +2,6 @@ package com.example.webquiz.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;

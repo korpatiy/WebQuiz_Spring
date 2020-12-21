@@ -1,4 +1,4 @@
-package com.example.webquiz.entities;
+package com.example.webquiz.dto;
 
 import java.util.List;
 
