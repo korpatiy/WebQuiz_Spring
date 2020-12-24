@@ -1,12 +1,11 @@
 package com.example.webquiz.controllers;
 
-import com.example.webquiz.entities.User;
-import com.example.webquiz.exceptions.ResourceNotFoundException;
-import com.example.webquiz.repositories.QuizRepository;
 import com.example.webquiz.dto.Answer;
 import com.example.webquiz.dto.ResponseQuiz;
 import com.example.webquiz.entities.Quiz;
-import com.example.webquiz.repositories.UserRepository;
+import com.example.webquiz.entities.User;
+import com.example.webquiz.exceptions.ResourceNotFoundException;
+import com.example.webquiz.repositories.QuizRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
-import java.util.*;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/quizzes")
@@ -23,9 +22,6 @@ public class QuizController {
 
     @Autowired
     private QuizRepository quizRepository;
-
-    @Autowired
-    private UserRepository userRepository;
 
     private Quiz quiz;
 
@@ -78,10 +74,4 @@ public class QuizController {
         quiz = quizRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Quiz not found for this id"));
     }
-
-    /*private Map<String, Boolean> createResponse() {
-        Map<String, Boolean> response = new HashMap<>();
-        response.put("deleted", Boolean.TRUE);
-        return response;
-    }*/
 }
