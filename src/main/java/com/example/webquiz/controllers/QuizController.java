@@ -1,6 +1,7 @@
 package com.example.webquiz.controllers;
 
 import com.example.webquiz.entities.User;
+import com.example.webquiz.exceptions.ResourceNotFoundException;
 import com.example.webquiz.repositories.QuizRepository;
 import com.example.webquiz.dto.Answer;
 import com.example.webquiz.dto.ResponseQuiz;
@@ -26,22 +27,22 @@ public class QuizController {
     @Autowired
     private UserRepository userRepository;
 
+    private Quiz quiz;
+
     public QuizController() {
     }
 
     @PostMapping(path = "/{id}/solve")
-    public ResponseQuiz getAnswer(@PathVariable Long id, @RequestBody Answer answer) {
-        Quiz quiz = quizRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Quiz not found for this id"));
+    public ResponseQuiz getAnswer(@PathVariable Long id, @RequestBody Answer answer) throws ResourceNotFoundException {
+        findByIdException(id);
         if (answer.getAnswer().equals(quiz.getAnswer()))
             return new ResponseQuiz(true);
         return new ResponseQuiz(false);
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<Quiz> getQuiz(@PathVariable Long id) {
-        Quiz quiz = quizRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Quiz not found for this id"));
+    public ResponseEntity<Quiz> getQuiz(@PathVariable Long id) throws ResourceNotFoundException {
+        findByIdException(id);
         return ResponseEntity.ok().body(quiz);
     }
 
@@ -57,24 +58,30 @@ public class QuizController {
         return quizRepository.findAll();
     }
 
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @DeleteMapping()
-    public Map<String, Boolean> deleteQuizzes() {
+    public void deleteQuizzes() {
         quizRepository.deleteAll();
-        return createResponse();
     }
 
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
-    public Map<String, Boolean> deleteQuiz(@PathVariable Long id) {
-        Quiz quiz = quizRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Quiz not found for this id"));
-
+    public void deleteQuiz(@PathVariable Long id) throws ResourceNotFoundException {
+        findByIdException(id);
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (quiz.getCreator() != user.getEmail())
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         quizRepository.delete(quiz);
-        return createResponse();
     }
 
-    private Map<String, Boolean> createResponse() {
+    private void findByIdException(Long id) throws ResourceNotFoundException {
+        quiz = quizRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Quiz not found for this id"));
+    }
+
+    /*private Map<String, Boolean> createResponse() {
         Map<String, Boolean> response = new HashMap<>();
         response.put("deleted", Boolean.TRUE);
         return response;
-    }
+    }*/
 }

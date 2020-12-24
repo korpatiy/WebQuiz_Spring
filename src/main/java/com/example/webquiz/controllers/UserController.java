@@ -25,7 +25,7 @@ public class UserController {
 
     @PostMapping("/api/register")
     public User createUser(@Valid @RequestBody User user) {
-        if (!checkEmail(user.getUsername()))
+        if (!checkEmail(user.getUsername()) || userRepository.findByEmail(user.getEmail()) != null)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The email must have a valid format (with @ and .)");
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
