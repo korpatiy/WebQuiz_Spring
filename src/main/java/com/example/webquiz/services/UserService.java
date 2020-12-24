@@ -1,6 +1,5 @@
 package com.example.webquiz.services;
 
-import com.example.webquiz.dto.MyUserDetails;
 import com.example.webquiz.entities.User;
 import com.example.webquiz.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +18,11 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Optional<User> user = userRepository.findByEmail(email);
+        User user = userRepository.findByEmail(email);
 
-        user.orElseThrow(() -> new UsernameNotFoundException("Not found user with email:" + email));
+        if (user == null)
+            throw new UsernameNotFoundException("Not found user with email:" + email);
 
-        return user.map(MyUserDetails::new).get();
+        return new User(user.getUsername(), user.getPassword());
     }
 }

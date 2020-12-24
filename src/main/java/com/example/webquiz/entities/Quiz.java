@@ -12,29 +12,36 @@ import java.util.List;
 public class Quiz {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
     @NotEmpty(message = "Title is required")
     private String title;
+
     @NotEmpty(message = "Text is required")
     private String text;
+
     @ElementCollection
     @NotEmpty(message = "Options are required")
     @Size(min = 2, message = "Question must have at least two options")
     private List<String> options;
-    @ElementCollection
+
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @ElementCollection
     private List<Integer> answer;
+
+    //@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private String creator;
 
     public Quiz() {
     }
 
-    public Quiz(long id, String title, String text, List<String> options, List<Integer> answer) {
-        this.id = id;
-        this.title = title;
-        this.text = text;
-        this.options = options;
-        this.answer = answer;
+    public String getCreator() {
+        return creator;
+    }
+
+    public void setCreator(String creator) {
+        this.creator = creator;
     }
 
     public long getId() {
