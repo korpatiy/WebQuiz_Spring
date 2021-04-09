@@ -9,9 +9,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
-@RequestMapping("/api/register")
+@RequestMapping("/api")
 public class UserController {
 
     @Autowired
@@ -21,12 +22,17 @@ public class UserController {
     private PasswordEncoder passwordEncoder;
 
     @ResponseStatus(HttpStatus.OK)
-    @PostMapping
+    @PostMapping(path = "/register")
     public void createUser(@Valid @RequestBody User user) {
         if (userRepository.findByEmail(user.getEmail()).isPresent())
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This email is already used");
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
+    }
+
+    @GetMapping(path = "/users")
+    public List<User> getUsers() {
+        return userRepository.findAll();
     }
 }

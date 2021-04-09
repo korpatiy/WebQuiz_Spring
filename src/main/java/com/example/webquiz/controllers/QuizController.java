@@ -65,7 +65,7 @@ public class QuizController {
     public void deleteQuiz(@PathVariable Long id) throws ResourceNotFoundException {
         findByIdException(id);
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (quiz.getCreator() != user.getEmail())
+        if (!quiz.getCreator().equals(user.getEmail()))
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         quizRepository.delete(quiz);
     }
